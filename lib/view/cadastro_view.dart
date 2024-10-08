@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pet_adoption/widgets/custom_text_field.dart';
 
 class CadastroView extends StatelessWidget {
-  final _formKey =
-      GlobalKey<FormState>(); // Adicionando uma chave para o formulário
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -18,7 +17,7 @@ class CadastroView extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey, // Usando a chave para o formulário
+          key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -29,33 +28,31 @@ class CadastroView extends StatelessWidget {
               SizedBox(height: 20),
               CustomTextField(
                 label: 'Nome',
-                controller: _nameController, // Passando o controlador
+                controller: _nameController,
               ),
               SizedBox(height: 16),
               CustomTextField(
                 label: 'E-mail',
-                controller: _emailController, // Passando o controlador
+                controller: _emailController,
               ),
               SizedBox(height: 16),
               CustomTextField(
                 label: 'Senha',
                 obscureText: true,
-                controller: _passwordController, // Passando o controlador
+                controller: _passwordController,
               ),
               SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      // Se o formulário for válido, mostre um SnackBar
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Cadastro realizado com sucesso!'),
                           duration: Duration(seconds: 2),
                         ),
                       );
-                      // Aqui você pode adicionar a lógica para salvar os dados
-                      // E redirecionar para outra tela, se necessário
+                      // Aqui você pode adicionar lógica para redirecionar ou salvar dados
                     }
                   },
                   child: Text('Cadastrar'),

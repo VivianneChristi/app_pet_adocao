@@ -1,26 +1,20 @@
 import 'package:flutter/material.dart';
-import '../widgets/custom_button.dart';
-import 'adicionar_pet_view.dart';
+import '../widgets/pet_card.dart'; // Certifique-se de que o caminho esteja correto
 
-class HomeScreen extends StatelessWidget {
+class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: Icon(Icons.menu, color: Colors.black),
-        title: Text(
-          'Bem-vindo(a)',
-          style: TextStyle(color: Colors.black),
-        ),
+        title: Text('Bring Us Home', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.purple,
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircleAvatar(
-              backgroundImage: AssetImage('assets/images/user_avatar.png'),
-            ),
-          )
+          IconButton(
+            icon: Icon(Icons.search, color: Colors.white),
+            onPressed: () {
+              // Ação de pesquisa
+            },
+          ),
         ],
       ),
       body: Padding(
@@ -28,103 +22,83 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Pesquisar aqui...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
+            Text(
+              'Street pets need protection',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
-            Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.purple.shade100,
-                borderRadius: BorderRadius.circular(12),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.purple,
               ),
-              child: Row(
-                children: [
-                  Image.asset('assets/images/cat_image.png', width: 80),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Animais de rua precisam de proteção',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                        SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.purple,
-                          ),
-                          child: Text('Doe Agora'),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
+              child: Text('Donate Now'),
             ),
             SizedBox(height: 20),
             Text(
-              'Categorias',
+              'Categories',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                CategoryWidget(icon: Icons.pets, label: 'Cães'),
-                CategoryWidget(icon: Icons.pets, label: 'Gatos'),
-                CategoryWidget(icon: Icons.pets, label: 'Pássaros'),
+                CategoryWidget(icon: Icons.pets, label: 'Dogs'),
+                CategoryWidget(icon: Icons.pets, label: 'Cats'),
+                CategoryWidget(icon: Icons.pets, label: 'Birds'),
               ],
             ),
             SizedBox(height: 20),
             Expanded(
-              child: ListView(
+              child: GridView.count(
+                crossAxisCount: 2,
                 children: [
                   PetCard(
-                      name: 'Bello',
-                      age: '9 meses de idade',
-                      price: 'R\$180',
-                      distance: '1,6 km de distância'),
+                    petName: 'Bello',
+                    petAge: '9 Months old',
+                    petPrice: '\$180',
+                    petDistance: '1.6 km away',
+                    imageUrl: 'assets/images/cat_image.png',
+                    description: 'Bello is a playful dog.',
+                  ),
                   PetCard(
-                      name: 'Mimi',
-                      age: '2 anos de idade',
-                      price: 'R\$200',
-                      distance: '2 km de distância'),
+                    petName: 'Mimi',
+                    petAge: '2 Years old',
+                    petPrice: '\$200',
+                    petDistance: '2 km away',
+                    imageUrl: 'assets/images/cat_image.png',
+                    description: 'Mimi is a loving cat.',
+                  ),
+                  // Adicione mais PetCards conforme necessário
                 ],
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Início',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Loja',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favoritos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Configurações',
-          ),
-        ],
-      ),
+    );
+  }
+}
+
+class CategoryWidget extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const CategoryWidget({Key? key, required this.icon, required this.label})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        CircleAvatar(
+          backgroundColor: Colors.purple.shade100,
+          radius: 30,
+          child: Icon(icon, color: Colors.purple, size: 30),
+        ),
+        SizedBox(height: 5),
+        Text(label, style: TextStyle(fontSize: 16)),
+      ],
     );
   }
 }
