@@ -1,39 +1,123 @@
 import 'package:flutter/material.dart';
-import 'login_view.dart'; // Importe a tela de login
 
-class SplashScreen extends StatelessWidget {
+class TelaDeEntradaView extends StatelessWidget {
+  const TelaDeEntradaView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginView()),
-      );
-    });
-
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/dog.png'), // Insira a imagem do pet aqui
-            SizedBox(height: 20),
-            Text(
-              'AdopPets',
-              style: TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
-                color: Colors.purple,
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Container(
+                  width: double.infinity,
+                  child: Image.asset(
+                    'assets/images/dog.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
+              Expanded(
+                flex: 1,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.white,
+                        Colors.white,
+                        Color(0xFFEAB8E4),
+                      ],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+                top: 100), // Ajuste a quantidade de espaço aqui
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Text(
+                  'AdopPets',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF5B2D91),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Bem-vindo!',
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF5B2D91),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 15),
+                    textStyle: const TextStyle(fontSize: 18),
+                  ),
+                  child: const Text('Iniciar Sessão'),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/cadastro');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    side: const BorderSide(color: Color(0xFF5B2D91)),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 15),
+                    textStyle: const TextStyle(fontSize: 18),
+                  ),
+                  child: const Text(
+                    'Criar Conta',
+                    style: TextStyle(color: Color(0xFF5B2D91)),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Ou registre-se com',
+                  style: TextStyle(color: Colors.black),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon:
+                          const Icon(Icons.facebook, color: Color(0xFF5B2D91)),
+                      onPressed: () {
+                        // Ação do Facebook
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.email, color: Color(0xFF5B2D91)),
+                      onPressed: () {
+                        // Ação do Google
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
-            SizedBox(height: 10),
-            Text(
-              '¡Bienvenido!\nInicia sesión o Regístrate para adoptar a tu nuevo amigo peludo.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

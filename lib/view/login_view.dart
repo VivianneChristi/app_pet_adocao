@@ -1,48 +1,89 @@
 import 'package:flutter/material.dart';
-import 'package:pet_adoption/widgets/custom_text_field.dart';
 
 class LoginView extends StatelessWidget {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  const LoginView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomTextField(
-              label: 'E-mail',
-              controller: _emailController,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blueAccent, Colors.pink],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/images/cat.png',
+                    height: 150), // Substitua pela sua imagem
+                SizedBox(height: 20),
+                Text(
+                  'Iniciar Sessão',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Email',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    hintText: 'Senha',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    // Lógica para login
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  ),
+                  child: Text('Iniciar sessão', style: TextStyle(fontSize: 18)),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // Navegar para recuperação de senha ou outra ação
+                  },
+                  child: Text('¿Você esqueceu sua senha?',
+                      style: TextStyle(color: Colors.white)),
+                ),
+                SizedBox(height: 10),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(
+                        context); // Retornar à tela anterior (ou tela de entrada)
+                  },
+                  child: Text('¿Você não tem uma conta? Inscrever-se',
+                      style: TextStyle(color: Colors.white)),
+                ),
+              ],
             ),
-            SizedBox(height: 16),
-            CustomTextField(
-              label: 'Senha',
-              obscureText: true,
-              controller: _passwordController,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Aqui você pode adicionar sua lógica de autenticação
-                // Para fins de demonstração, vamos apenas navegar para a página inicial
-                Navigator.pushReplacementNamed(context, '/home');
-              },
-              child: Text('Login'),
-            ),
-            TextButton(
-              onPressed: () {
-                // Navegar para a página de cadastro
-                Navigator.pushNamed(context, '/cadastro_view');
-              },
-              child: Text('Não tem uma conta? Cadastre-se aqui.'),
-            ),
-          ],
+          ),
         ),
       ),
     );
