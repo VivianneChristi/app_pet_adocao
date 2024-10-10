@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pet_adoption/view/detalhes_pet_view.dart';
+import 'package:pet_adoption/view/favorites_view.dart';
+import 'package:pet_adoption/view/perfil_view.dart';
+import 'package:pet_adoption/view/adotar_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -8,7 +12,92 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  List<String> favoritePets = [];
+  List<Map<String, dynamic>> favoritePets = [];
+  List<Map<String, dynamic>> petsToAdopt = [];
+
+  // Lista de pets disponíveis (cães)
+  List<Map<String, dynamic>> availableDogs = [
+    {
+      'imagePath': 'assets/images/dog1.png',
+      'name': 'Canela',
+      'breed': 'Pitbull',
+      'genderIcon': Icons.female,
+      'genderColor': Colors.pink,
+      'description': 'Muito dócil e brincalhona.',
+      'isAdopted': false,
+    },
+    {
+      'imagePath': 'assets/images/dog2.png',
+      'name': 'Luke',
+      'breed': 'Golden',
+      'genderIcon': Icons.male,
+      'genderColor': Colors.blue,
+      'description': 'Adora nadar e buscar bolinhas.',
+      'isAdopted': false,
+    },
+    {
+      'imagePath': 'assets/images/dog3.png',
+      'name': 'Nemo',
+      'breed': 'Criollo',
+      'genderIcon': Icons.male,
+      'genderColor': Colors.blue,
+      'description': 'Cheio de energia e ama correr.',
+      'isAdopted': false,
+    },
+  ];
+
+  // Lista de pets disponíveis (gatos)
+  List<Map<String, dynamic>> availableCats = [
+    {
+      'imagePath': 'assets/images/cat1.png',
+      'name': 'Amendoa',
+      'breed': 'Mestiza',
+      'genderIcon': Icons.female,
+      'genderColor': Colors.pink,
+      'description': 'Muito curiosa e independente.',
+      'isAdopted': false,
+    },
+    {
+      'imagePath': 'assets/images/cat2.png',
+      'name': 'Thor',
+      'breed': 'Pixie',
+      'genderIcon': Icons.male,
+      'genderColor': Colors.blue,
+      'description': 'Gosta de alturas e explorar.',
+      'isAdopted': false,
+    },
+    {
+      'imagePath': 'assets/images/cat3.png',
+      'name': 'Duke',
+      'breed': 'Somali',
+      'genderIcon': Icons.male,
+      'genderColor': Colors.blue,
+      'description': 'Muito carinhoso e dócil.',
+      'isAdopted': false,
+    },
+  ];
+
+  void markPetAsAdopted(Map<String, dynamic> pet) {
+    setState(() {
+      pet['isAdopted'] = true; // Marcar o pet como adotado
+      petsToAdopt.add(pet);
+      if (availableDogs.contains(pet)) {
+        availableDogs.remove(pet); // Remover da lista de disponíveis
+      } else if (availableCats.contains(pet)) {
+        availableCats.remove(pet); // Remover da lista de disponíveis
+      }
+    });
+  }
+
+  void toggleFavorite(Map<String, dynamic> pet) {
+    setState(() {
+      if (favoritePets.contains(pet)) {
+        favoritePets.remove(pet); // Remove se já for favorito
+      } else {
+        favoritePets.add(pet); // Adiciona à lista de favoritos
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +109,7 @@ class _HomeViewState extends State<HomeView> {
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list, color: Colors.pink),
-            onPressed: () {
-              // Lógica para filtros
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -40,16 +127,13 @@ class _HomeViewState extends State<HomeView> {
               const SizedBox(height: 8),
               SizedBox(
                 height: 200,
-                child: ListView(
+                child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  children: [
-                    _petCard('assets/images/dog1.png', 'Canela', 'Pitbull',
-                        Icons.female, Colors.pink),
-                    _petCard('assets/images/dog2.png', 'Duke', 'Golden',
-                        Icons.male, Colors.blue),
-                    _petCard('assets/images/dog3.png', 'Nemo', 'Criollo',
-                        Icons.male, Colors.blue),
-                  ],
+                  itemCount: availableDogs.length,
+                  itemBuilder: (context, index) {
+                    final pet = availableDogs[index];
+                    return _petCard(pet);
+                  },
                 ),
               ),
               const SizedBox(height: 20),
@@ -60,18 +144,35 @@ class _HomeViewState extends State<HomeView> {
               const SizedBox(height: 8),
               SizedBox(
                 height: 200,
-                child: ListView(
+                child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  children: [
-                    _petCard('assets/images/cat1.png', 'Canela', 'Mestiza',
-                        Icons.female, Colors.pink),
-                    _petCard('assets/images/cat2.png', 'Thor', 'Pixie',
-                        Icons.male, Colors.blue),
-                    _petCard('assets/images/cat3.png', 'Duke', 'Somali',
-                        Icons.male, Colors.blue),
-                  ],
+                  itemCount: availableCats.length,
+                  itemBuilder: (context, index) {
+                    final pet = availableCats[index];
+                    return _petCard(pet);
+                  },
                 ),
               ),
+              if (petsToAdopt.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Pets Indisponíveis',
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      Column(
+                        children: petsToAdopt.map((pet) {
+                          return _adoptedPetCard(pet);
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
         ),
@@ -81,27 +182,37 @@ class _HomeViewState extends State<HomeView> {
         unselectedItemColor: Colors.grey,
         onTap: (index) {
           if (index == 0) {
-            // Navegação para a tela inicial (Home)
-            // Lógica para a tela inicial, se necessário
+            // Lógica para tela inicial
           } else if (index == 1) {
-            // Navegação para a página de favoritos
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      FavoritesView(favoritePets: favoritePets)),
+                builder: (context) => FavoritesView(
+                  favoritePets: favoritePets,
+                  onAdoptPet: markPetAsAdopted,
+                  onRemoveFavorite: (Map<String, dynamic> pet) {
+                    setState(() {
+                      favoritePets.remove(pet);
+                      markPetAsAdopted(pet);
+                    });
+                  },
+                ),
+              ),
             );
           } else if (index == 2) {
-            // Lógica para reportar, se necessário
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AdotarView(petsToAdopt: petsToAdopt),
+              ),
+            );
           } else if (index == 3) {
-            // Navegação para a página de perfil
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => const PerfilView(
-                  userName: 'Seu Nome', // Substitua pelo nome do usuário
-                  userEmail:
-                      'seuemail@example.com', // Substitua pelo e-mail do usuário
+                  userName: 'Seu Nome',
+                  userEmail: 'seuemail@example.com',
                 ),
               ),
             );
@@ -117,8 +228,8 @@ class _HomeViewState extends State<HomeView> {
             label: 'Favoritos',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.report),
-            label: 'Reportar',
+            icon: Icon(Icons.add_rounded),
+            label: 'Adotar',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -129,16 +240,24 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _petCard(String imagePath, String name, String breed,
-      IconData genderIcon, Color genderColor) {
-    bool isFavorite = favoritePets.contains(name);
+  Widget _petCard(Map<String, dynamic> pet) {
     return GestureDetector(
       onTap: () {
-        // Navegar para a página de detalhes do pet
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetalhesPetView(name: name, breed: breed),
+            builder: (context) => DetalhesPetView(
+              name: pet['name'],
+              breed: pet['breed'],
+              imagePath: pet['imagePath'],
+              age: '2 anos',
+              weight: '15 kg',
+              gender: pet['genderIcon'] == Icons.female ? 'Fêmea' : 'Macho',
+              description: ' ',
+              onAdopt: () {
+                markPetAsAdopted(pet);
+              },
+            ),
           ),
         );
       },
@@ -164,7 +283,7 @@ class _HomeViewState extends State<HomeView> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.asset(
-                    imagePath,
+                    pet['imagePath'],
                     fit: BoxFit.cover,
                     height: 120,
                     width: double.infinity,
@@ -175,17 +294,17 @@ class _HomeViewState extends State<HomeView> {
                   right: 8,
                   child: IconButton(
                     icon: Icon(
-                      Icons.pets,
-                      color: isFavorite ? Colors.amber : Colors.grey,
+                      favoritePets.contains(pet)
+                          ? Icons.pets
+                          : Icons
+                              .pets_outlined, // Muda o ícone conforme o estado
+                      color: favoritePets.contains(pet)
+                          ? Colors.amber
+                          : Colors.red, // Muda a cor
                     ),
                     onPressed: () {
-                      setState(() {
-                        if (isFavorite) {
-                          favoritePets.remove(name);
-                        } else {
-                          favoritePets.add(name);
-                        }
-                      });
+                      toggleFavorite(
+                          pet); // Chama a função para alternar o favorito
                     },
                   ),
                 ),
@@ -193,130 +312,49 @@ class _HomeViewState extends State<HomeView> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        name,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(width: 5),
-                      Icon(genderIcon, color: genderColor, size: 18),
-                    ],
-                  ),
-                  Text(
-                    breed,
-                    style: const TextStyle(color: Colors.pink),
-                  ),
-                ],
+              child: Text(
+                pet['name'],
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  pet['breed'],
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                Icon(
+                  pet['genderIcon'],
+                  color: pet['genderColor'],
+                ),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
-}
 
-class DetalhesPetView extends StatelessWidget {
-  final String name;
-  final String breed;
-
-  const DetalhesPetView({Key? key, required this.name, required this.breed})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(name),
-        backgroundColor: Colors.pink,
+  Widget _adoptedPetCard(Map<String, dynamic> pet) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.grey.shade300,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Image.asset('assets/images/dog1.png',
-                fit: BoxFit.cover), // Trocar pela imagem correta
-            const SizedBox(height: 10),
-            Text(
-              name,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Raça: $breed',
-              style: const TextStyle(fontSize: 18),
-            ),
-            // Adicione mais informações aqui, como idade, peso, etc.
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class FavoritesView extends StatelessWidget {
-  final List<String> favoritePets;
-
-  const FavoritesView({Key? key, required this.favoritePets}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Favoritos', style: TextStyle(color: Colors.pink)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: favoritePets
-              .map((pet) => ListTile(
-                    title: Text(pet),
-                  ))
-              .toList(),
-        ),
-      ),
-    );
-  }
-}
-
-class PerfilView extends StatelessWidget {
-  final String userName;
-  final String userEmail;
-
-  const PerfilView({Key? key, required this.userName, required this.userEmail})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Perfil', style: TextStyle(color: Colors.pink)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Nome: $userName',
-              style: const TextStyle(fontSize: 24),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Email: $userEmail',
-              style: const TextStyle(fontSize: 18),
-            ),
-            // Adicione mais informações do usuário aqui
-          ],
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(pet['name'], style: const TextStyle(fontSize: 18)),
+          const Text('Pet encontrou um lar',
+              style: TextStyle(color: Colors.grey)),
+        ],
       ),
     );
   }

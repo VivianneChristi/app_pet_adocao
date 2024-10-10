@@ -16,6 +16,8 @@ class DetalhesPetView extends StatelessWidget {
     required this.weight,
     required this.gender,
     required this.description,
+    required String breed,
+    required void Function() onAdopt,
   }) : super(key: key);
 
   @override

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../view/detalhes_pet_view.dart'; // Importando a página de detalhes
+import '../view/detalhes_pet_view.dart';
 
 class PetCard extends StatelessWidget {
   final String petName;
   final String petAge;
-  final String petPrice;
-  final String petDistance;
+  final String petWeight;
+  final String petGender;
   final String imageUrl;
   final String description;
 
@@ -13,8 +13,8 @@ class PetCard extends StatelessWidget {
     Key? key,
     required this.petName,
     required this.petAge,
-    required this.petPrice,
-    required this.petDistance,
+    required this.petWeight,
+    required this.petGender,
     required this.imageUrl,
     required this.description,
   }) : super(key: key);
@@ -34,10 +34,12 @@ class PetCard extends StatelessWidget {
               builder: (context) => DetalhesPetView(
                 name: petName,
                 age: petAge,
-                price: petPrice,
-                distance: petDistance,
-                imageUrl: imageUrl,
+                weight: petWeight,
+                gender: petGender,
+                imagePath: imageUrl,
                 description: description,
+                breed: '',
+                onAdopt: () {},
               ),
             ),
           );
@@ -64,9 +66,9 @@ class PetCard extends StatelessWidget {
                   SizedBox(height: 4),
                   Text(petAge, style: TextStyle(fontSize: 14)),
                   SizedBox(height: 4),
-                  Text(petPrice, style: TextStyle(fontSize: 14)),
+                  Text(petWeight, style: TextStyle(fontSize: 14)),
                   SizedBox(height: 4),
-                  Text(petDistance, style: TextStyle(fontSize: 14)),
+                  Text(petGender, style: TextStyle(fontSize: 14)),
                 ],
               ),
             ),
