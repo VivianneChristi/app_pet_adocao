@@ -1,61 +1,107 @@
 import 'package:flutter/material.dart';
 
-class PerfilView extends StatelessWidget {
+class ProfileView extends StatefulWidget {
   final String userName;
-  final String userEmail;
+  final String email;
+  final String address; // Adicione o endereço
+  // Adicione outros parâmetros conforme necessário, como senha
 
-  const PerfilView({Key? key, required this.userName, required this.userEmail})
-      : super(key: key);
+  const ProfileView({
+    Key? key,
+    required this.userName,
+    required this.email,
+    required this.address,
+    required String userEmail,
+  }) : super(key: key);
+
+  @override
+  _ProfileViewState createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> {
+  bool isEditing = false; // Controla o modo de edição
+
+  late TextEditingController nameController;
+  late TextEditingController emailController;
+  late TextEditingController addressController;
+
+  @override
+  void initState() {
+    super.initState();
+    // Inicializa os controladores com os valores atuais
+    nameController = TextEditingController(text: widget.userName);
+    emailController = TextEditingController(text: widget.email);
+    addressController = TextEditingController(text: widget.address);
+  }
+
+  @override
+  void dispose() {
+    // Libera os controladores quando o widget for removido
+    nameController.dispose();
+    emailController.dispose();
+    addressController.dispose();
+    super.dispose();
+  }
+
+  void toggleEditMode() {
+    setState(() {
+      isEditing = !isEditing; // Alterna o modo de edição
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Perfil', style: TextStyle(color: Colors.pink)),
-        backgroundColor: Colors.white,
-        elevation: 0,
+        title: const Text('Perfil'),
+        backgroundColor: Colors.pink,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Informações do Usuário',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            CircleAvatar(
+              radius: 50,
+              backgroundImage: AssetImage(
+                  'assets/images/user_avatar.png'), // Imagem do usuário
             ),
-            const SizedBox(height: 20),
-            _infoCard('Nome', userName),
-            _infoCard('E-mail', userEmail),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Adicione a lógica para editar o perfil do usuário
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.pink, // Cor do botão
+            const SizedBox(height: 16),
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: 'Nome',
+                border: OutlineInputBorder(),
               ),
-              child: const Text('Editar Perfil'),
+              enabled:
+                  isEditing, // Habilita apenas se estiver em modo de edição
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _infoCard(String title, String value) {
-    return Card(
-      elevation: 3,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            const SizedBox(height: 16),
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(),
+              ),
+              enabled:
+                  isEditing, // Habilita apenas se estiver em modo de edição
+              keyboardType: TextInputType.emailAddress,
             ),
-            Text(value, style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 16),
+            TextField(
+              controller: addressController,
+              decoration: InputDecoration(
+                labelText: 'Endereço',
+                border: OutlineInputBorder(),
+              ),
+              enabled:
+                  isEditing, // Habilita apenas se estiver em modo de edição
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: toggleEditMode, // Alterna entre editar e visualizar
+              child: Text(isEditing ? 'Salvar' : 'Editar Perfil'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.pink),
+            ),
           ],
         ),
       ),

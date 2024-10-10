@@ -7,6 +7,7 @@ class DetalhesPetView extends StatelessWidget {
   final String weight;
   final String gender;
   final String description;
+  final void Function() onFavorite; // Adiciona função para favoritar
 
   const DetalhesPetView({
     Key? key,
@@ -16,8 +17,9 @@ class DetalhesPetView extends StatelessWidget {
     required this.weight,
     required this.gender,
     required this.description,
-    required String breed,
-    required void Function() onAdopt,
+    required this.onFavorite,
+    required breed,
+    required Null Function() onAdopt, // Recebe a função como parâmetro
   }) : super(key: key);
 
   @override
@@ -46,8 +48,10 @@ class DetalhesPetView extends StatelessWidget {
                 child: Image.asset(
                   imagePath,
                   fit: BoxFit.cover,
+                  width: MediaQuery.of(context)
+                      .size
+                      .width, // Define a largura como 100%
                   height: 200,
-                  width: 200,
                 ),
               ),
             ),
@@ -66,10 +70,6 @@ class DetalhesPetView extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Acerca de ',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
             const SizedBox(height: 10),
             Text(
               description,
@@ -84,10 +84,10 @@ class DetalhesPetView extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 ),
                 onPressed: () {
-                  // Lógica para adotar o pet
+                  onFavorite(); // Chama a função para favoritar
                 },
                 child: const Text(
-                  'ADOTAR',
+                  'Favoritar',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),

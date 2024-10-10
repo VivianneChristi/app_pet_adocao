@@ -200,9 +200,11 @@ class _HomeViewState extends State<HomeView> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const PerfilView(
+                builder: (context) => const ProfileView(
                   userName: 'Seu Nome',
                   userEmail: 'seuemail@example.com',
+                  email: '',
+                  address: '',
                 ),
               ),
             );
@@ -218,7 +220,7 @@ class _HomeViewState extends State<HomeView> {
             label: 'Favoritos',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_rounded),
+            icon: Icon(Icons.home_sharp),
             label: 'Adotar',
           ),
           BottomNavigationBarItem(
@@ -243,10 +245,11 @@ class _HomeViewState extends State<HomeView> {
               age: '2 anos',
               weight: '15 kg',
               gender: pet['genderIcon'] == Icons.female ? 'Fêmea' : 'Macho',
-              description: ' ',
+              description: '',
               onAdopt: () {
                 markPetAsAdopted(pet);
               },
+              onFavorite: () {},
             ),
           ),
         );

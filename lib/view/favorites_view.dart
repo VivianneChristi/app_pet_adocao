@@ -35,6 +35,9 @@ class FavoritesView extends StatelessWidget {
   }
 
   Widget _petCard(Map<String, dynamic> pet, BuildContext context) {
+    final isAdopted =
+        pet['isAdopted'] ?? false; // Verifica se o pet foi adotado
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: ListTile(
@@ -43,26 +46,44 @@ class FavoritesView extends StatelessWidget {
           pet['imagePath'],
           fit: BoxFit.cover,
           width: 80,
+          height: 80, // Altura fixa para tornar a imagem quadrada
         ),
-        title: Text(pet['name'],
-            style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(pet['breed']),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
+        title: Container(
+          width: double.infinity, // Ocupar 100% da largura
+          child: Text(
+            pet['name'],
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        subtitle: Column(
+          crossAxisAlignment:
+              CrossAxisAlignment.start, // Alinha a coluna à esquerda
           children: [
-            IconButton(
-              icon: const Icon(Icons.favorite, color: Colors.red),
-              onPressed: () {
-                onAdoptPet(pet);
-                Navigator.pop(context);
-              },
+            Text(
+              pet['breed'], // Exibe a raça
+              style: const TextStyle(fontSize: 14),
             ),
-            IconButton(
-              icon: const Icon(Icons.pets, color: Colors.brown),
-              onPressed: () {
-                onRemoveFavorite(pet);
-              },
-            ),
+            const SizedBox(height: 8), // Espaçamento entre a raça e o botão
+            isAdopted
+                ? ElevatedButton(
+                    onPressed: null, // Desabilita o botão
+                    child: Text('Você deu um lar a ${pet['name']}'),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.grey, // Cor do botão após adoção
+                    ),
+                  )
+                : ElevatedButton(
+                    onPressed: () {
+                      onAdoptPet(pet);
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Adotar'),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.pink, // Cor do botão
+                    ),
+                  ),
           ],
         ),
       ),

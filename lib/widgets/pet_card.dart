@@ -40,6 +40,7 @@ class PetCard extends StatelessWidget {
                 description: description,
                 breed: '',
                 onAdopt: () {},
+                onFavorite: () {},
               ),
             ),
           );

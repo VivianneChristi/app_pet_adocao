@@ -16,8 +16,7 @@ class _AdotarViewState extends State<AdotarView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Seus futuros pets',
-            style: TextStyle(color: Colors.pink)),
+        title: const Text('Seus pets', style: TextStyle(color: Colors.pink)),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
