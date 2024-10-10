@@ -79,22 +79,12 @@ class _HomeViewState extends State<HomeView> {
 
   void markPetAsAdopted(Map<String, dynamic> pet) {
     setState(() {
-      pet['isAdopted'] = true; // Marcar o pet como adotado
+      pet['isAdopted'] = true;
       petsToAdopt.add(pet);
       if (availableDogs.contains(pet)) {
-        availableDogs.remove(pet); // Remover da lista de disponíveis
+        availableDogs.remove(pet);
       } else if (availableCats.contains(pet)) {
-        availableCats.remove(pet); // Remover da lista de disponíveis
-      }
-    });
-  }
-
-  void toggleFavorite(Map<String, dynamic> pet) {
-    setState(() {
-      if (favoritePets.contains(pet)) {
-        favoritePets.remove(pet); // Remove se já for favorito
-      } else {
-        favoritePets.add(pet); // Adiciona à lista de favoritos
+        availableCats.remove(pet);
       }
     });
   }
@@ -296,15 +286,17 @@ class _HomeViewState extends State<HomeView> {
                     icon: Icon(
                       favoritePets.contains(pet)
                           ? Icons.pets
-                          : Icons
-                              .pets_outlined, // Muda o ícone conforme o estado
+                          : Icons.pets_outlined,
                       color: favoritePets.contains(pet)
                           ? Colors.amber
-                          : Colors.red, // Muda a cor
+                          : Colors.grey,
                     ),
                     onPressed: () {
-                      toggleFavorite(
-                          pet); // Chama a função para alternar o favorito
+                      setState(() {
+                        if (!favoritePets.contains(pet)) {
+                          favoritePets.add(pet);
+                        }
+                      });
                     },
                   ),
                 ),
@@ -312,26 +304,39 @@ class _HomeViewState extends State<HomeView> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(
-                pet['name'],
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      pet['name'],
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(
+                          pet['genderIcon'],
+                          color: pet['genderColor'],
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          pet['breed'],
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  pet['breed'],
-                  style: const TextStyle(color: Colors.grey),
-                ),
-                Icon(
-                  pet['genderIcon'],
-                  color: pet['genderColor'],
-                ),
-              ],
             ),
           ],
         ),
@@ -341,19 +346,46 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _adoptedPetCard(Map<String, dynamic> pet) {
     return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Colors.grey.shade300,
+        color: Colors.grey[200],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(pet['name'], style: const TextStyle(fontSize: 18)),
-          const Text('Pet encontrou um lar',
-              style: TextStyle(color: Colors.grey)),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(
+              pet['imagePath'],
+              width: 100,
+              height: 100,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  pet['name'],
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Pet encontrou um novo lar!',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.green[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
