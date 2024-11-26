@@ -78,18 +78,21 @@ class _AdotarViewState extends State<AdotarView> {
   }
 
   Widget _petCard(Map<String, dynamic> pet) {
+    // Verificando se a chave 'imagePath' existe, caso contrário, usa uma imagem padrão
+    String imagePath = pet['imagePath'] ?? 'assets/images/default_pet.png';
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: ListTile(
         contentPadding: const EdgeInsets.all(16),
         leading: Image.asset(
-          pet['imagePath'],
+          imagePath,
           fit: BoxFit.cover,
           width: 80,
         ),
-        title: Text(pet['name'],
+        title: Text(pet['name'] ?? 'Nome desconhecido',
             style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(pet['breed']),
+        subtitle: Text(pet['breed'] ?? 'Raça desconhecida'),
       ),
     );
   }

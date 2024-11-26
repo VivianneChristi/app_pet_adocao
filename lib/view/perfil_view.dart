@@ -62,8 +62,7 @@ class _ProfileViewState extends State<ProfileView> {
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundImage: AssetImage(
-                  'assets/images/user_avatar.png'), // Imagem do usuário
+              backgroundImage: AssetImage('assets/images/user_avatar.png'),
             ),
             const SizedBox(height: 16),
             TextField(

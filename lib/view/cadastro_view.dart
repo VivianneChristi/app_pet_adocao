@@ -1,14 +1,80 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:pet_adoption/view/home_view.dart';
 
 class CadastroView extends StatelessWidget {
   const CadastroView({Key? key}) : super(key: key);
+
+  Future<void> _cadastro(BuildContext context, String nome, String email,
+      String senha, String confirmaSenha, String telefone) async {
+    final url =
+        Uri.parse('https://pet-adopt-dq32j.ondigitalocean.app/user/register');
+
+    final body = {
+      'name': nome,
+      'email': email,
+      'phone': telefone,
+      'password': senha,
+      'confirmpassword': confirmaSenha, // Corrigido para letras minúsculas
+    };
+
+    print('Dados enviados: $body'); // Log para verificar os dados enviados
+
+    try {
+      final response = await http.post(
+        url,
+        body: jsonEncode(body),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      print('Status Code: ${response.statusCode}');
+      print('Resposta: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Conta Criada'),
+              content: const Text('Sua conta foi criada com sucesso!'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Fecha o diálogo
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeView()),
+                    ); // Navega para a página inicial
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        final error =
+            jsonDecode(response.body)['message'] ?? 'Erro desconhecido';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro: $error')),
+        );
+      }
+    } catch (e) {
+      print('Erro de conexão: $e'); // Log do erro de conexão
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro ao conectar à API')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     TextEditingController nomeController = TextEditingController();
     TextEditingController emailController = TextEditingController();
     TextEditingController senhaController = TextEditingController();
+    TextEditingController confirmaSenhaController = TextEditingController();
+    TextEditingController telefoneController = TextEditingController();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -35,7 +101,7 @@ class CadastroView extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFFFFFFFF),
+                      color: Color(0xFF321BA4),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -61,6 +127,20 @@ class CadastroView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: telefoneController,
+                    decoration: InputDecoration(
+                      hintText: 'Telefone',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 10),
                   TextField(
@@ -75,59 +155,68 @@ class CadastroView extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: confirmaSenhaController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      hintText: 'Confirme sua Senha',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      // Lógica para criar a conta
-                      if (nomeController.text.isNotEmpty &&
-                          emailController.text.isNotEmpty &&
-                          senhaController.text.isNotEmpty) {
-                        // Simula a criação da conta
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Conta Criada'),
-                              content: const Text(
-                                  'Sua conta foi criada com sucesso!'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context); // Fecha o diálogo
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => HomeView()),
-                                    ); // Navega para a tela inicial
-                                  },
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      } else {
-                        // Exibe mensagem de erro
+                      final nome = nomeController.text.trim();
+                      final email = emailController.text.trim();
+                      final senha = senhaController.text.trim();
+                      final confirmaSenha = confirmaSenhaController.text.trim();
+                      final telefone = telefoneController.text.trim();
+
+                      if (nome.isEmpty ||
+                          email.isEmpty ||
+                          senha.isEmpty ||
+                          telefone.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                               content: Text('Preencha todos os campos!')),
                         );
+                        return;
                       }
+
+                      if (senha != confirmaSenha) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('As senhas não coincidem!')),
+                        );
+                        return;
+                      }
+
+                      _cadastro(
+                          context, nome, email, senha, confirmaSenha, telefone);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF321BA4),
                       fixedSize: const Size(328, 48),
                     ),
-                    child: const Text('Criar conta',
-                        style: TextStyle(fontSize: 18, color: Colors.white)),
+                    child: const Text(
+                      'Criar conta',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
                   ),
                   const SizedBox(height: 10),
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: const Text('Você já tem uma conta? Conecte-se',
-                        style: TextStyle(color: Color(0xFF321BA4))),
+                    child: const Text(
+                      'Você já tem uma conta? Conecte-se',
+                      style: TextStyle(color: Color(0xFF321BA4)),
+                    ),
                   ),
                 ],
               ),
