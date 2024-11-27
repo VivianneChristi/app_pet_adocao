@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../view/detalhes_pet_view.dart';
+import 'package:pet_adoption/view/detalhes_pet_view.dart';
 
 class PetCard extends StatelessWidget {
   final String petName;
@@ -62,14 +62,14 @@ class PetCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(petName,
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 4),
-                  Text(petAge, style: TextStyle(fontSize: 14)),
-                  SizedBox(height: 4),
-                  Text(petWeight, style: TextStyle(fontSize: 14)),
-                  SizedBox(height: 4),
-                  Text(petGender, style: TextStyle(fontSize: 14)),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 4),
+                  Text(petAge, style: const TextStyle(fontSize: 14)),
+                  const SizedBox(height: 4),
+                  Text(petWeight, style: const TextStyle(fontSize: 14)),
+                  const SizedBox(height: 4),
+                  Text(petGender, style: const TextStyle(fontSize: 14)),
                 ],
               ),
             ),

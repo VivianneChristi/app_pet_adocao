@@ -24,66 +24,108 @@ class FavoritesView extends StatelessWidget {
           ? const Center(
               child: Text('Nenhum favorito encontrado.'),
             )
-          : ListView.builder(
-              itemCount: favoritePets.length,
-              itemBuilder: (context, index) {
-                final pet = favoritePets[index];
-                return _petCard(pet, context);
-              },
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16.0,
+                  mainAxisSpacing: 16.0,
+                  childAspectRatio: 124 / 210,
+                ),
+                itemCount: favoritePets.length,
+                itemBuilder: (context, index) {
+                  final pet = favoritePets[index];
+                  return _petCard(pet, context);
+                },
+              ),
             ),
     );
   }
 
   Widget _petCard(Map<String, dynamic> pet, BuildContext context) {
-    final isAdopted =
-        pet['isAdopted'] ?? false; // Verifica se o pet foi adotado
-
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
-        leading: Image.asset(
-          pet['imagePath'],
-          fit: BoxFit.cover,
-          width: 80,
-          height: 80, // Altura fixa para tornar a imagem quadrada
-        ),
-        title: Container(
-          width: double.infinity, // Ocupar 100% da largura
-          child: Text(
-            pet['name'],
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start, // Alinha a coluna à esquerda
-          children: [
-            Text(
-              pet['breed'], // Exibe a raça
-              style: const TextStyle(fontSize: 14),
+    return GestureDetector(
+      onTap: () {
+        // Comportamento ao clicar no card (opcional)
+      },
+      child: Container(
+        width: 124,
+        height: 210,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 5,
+              offset: const Offset(0, 2),
             ),
-            const SizedBox(height: 8), // Espaçamento entre a raça e o botão
-            isAdopted
-                ? ElevatedButton(
-                    onPressed: null, // Desabilita o botão
-                    child: Text('Você deu um lar a ${pet['name']}'),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.grey, // Cor do botão após adoção
-                    ),
-                  )
-                : ElevatedButton(
-                    onPressed: () {
-                      onAdoptPet(pet);
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Adotar'),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.pink, // Cor do botão
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Image.asset(
+                pet['imagePath'],
+                fit: BoxFit.cover,
+                height: 160,
+                width: double.infinity,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Icon(
+                    pet['genderIcon'],
+                    color: pet['genderColor'],
+                    size: 18,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    pet['name'],
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
                   ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                pet['breed'],
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (!pet['isAdopted']) {
+                    onAdoptPet(pet); // Adota o pet
+                    onRemoveFavorite(pet); // Remove o pet dos favoritos
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.pink,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  pet['isAdopted'] ? 'Adotado' : 'Adotar',
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
           ],
         ),
       ),

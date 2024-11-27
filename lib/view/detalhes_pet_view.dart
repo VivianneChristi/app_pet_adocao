@@ -1,96 +1,110 @@
 import 'package:flutter/material.dart';
 
 class DetalhesPetView extends StatelessWidget {
-  final String imagePath;
   final String name;
   final String age;
   final String weight;
   final String gender;
+  final String imagePath;
   final String description;
-  final void Function() onFavorite; // Adiciona função para favoritar
+  final String breed;
+  final VoidCallback onAdopt;
+  final VoidCallback onFavorite;
 
   const DetalhesPetView({
     Key? key,
-    required this.imagePath,
     required this.name,
     required this.age,
     required this.weight,
     required this.gender,
+    required this.imagePath,
     required this.description,
+    required this.breed,
+    required this.onAdopt,
     required this.onFavorite,
-    required breed,
-    required Null Function() onAdopt, // Recebe a função como parâmetro
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(name, style: const TextStyle(color: Colors.pink)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.pink),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        title: Text(name),
+        backgroundColor: Colors.pink,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(16.0),
                 child: Image.asset(
                   imagePath,
+                  height: 250,
+                  width: double.infinity,
                   fit: BoxFit.cover,
-                  width: MediaQuery.of(context)
-                      .size
-                      .width, // Define a largura como 100%
-                  height: 200,
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16.0),
             Text(
               name,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8.0),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _infoCard('Idade', age),
                 _infoCard('Peso', weight),
-                _infoCard('Sexo', gender),
+                _infoCard('Gênero', gender),
               ],
             ),
-            const SizedBox(height: 20),
-            const SizedBox(height: 10),
+            const SizedBox(height: 16.0),
+            Text(
+              'Raça: $breed',
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 16.0),
+            Text(
+              'Descrição:',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8.0),
             Text(
               description,
               style: const TextStyle(fontSize: 16),
             ),
-            const Spacer(),
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.pink,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+            const SizedBox(height: 32.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: onAdopt,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0, vertical: 12.0),
+                  ),
+                  child: const Text(
+                    'Adotar',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
-                onPressed: () {
-                  onFavorite(); // Chama a função para favoritar
-                },
-                child: const Text(
-                  'Favoritar',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ElevatedButton(
+                  onPressed: onFavorite,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0, vertical: 12.0),
+                  ),
+                  child: const Text(
+                    'Favoritar',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
-              ),
+              ],
             ),
           ],
         ),
@@ -98,14 +112,14 @@ class DetalhesPetView extends StatelessWidget {
     );
   }
 
-  Widget _infoCard(String title, String value) {
+  Widget _infoCard(String label, String value) {
     return Column(
       children: [
         Text(
-          title,
+          label,
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 5),
+        const SizedBox(height: 8.0),
         Text(
           value,
           style: const TextStyle(fontSize: 16),

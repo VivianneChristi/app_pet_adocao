@@ -11,25 +11,23 @@ class CadastroView extends StatelessWidget {
     final url =
         Uri.parse('https://pet-adopt-dq32j.ondigitalocean.app/user/register');
 
-    final body = {
-      'name': nome,
-      'email': email,
-      'phone': telefone,
-      'password': senha,
-      'confirmpassword': confirmaSenha, // Corrigido para letras minúsculas
-    };
-
-    print('Dados enviados: $body'); // Log para verificar os dados enviados
-
     try {
       final response = await http.post(
         url,
-        body: jsonEncode(body),
+        body: jsonEncode({
+          'name': nome,
+          'email': email,
+          'password': senha,
+          'confirmpassword': confirmaSenha, // Confirmar senha
+          'phone': telefone, // Telefone
+        }),
         headers: {'Content-Type': 'application/json'},
       );
 
+      // Exibe os logs para depuração
+      print('URL: $url');
       print('Status Code: ${response.statusCode}');
-      print('Resposta: ${response.body}');
+      print('Response Body: ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         showDialog(

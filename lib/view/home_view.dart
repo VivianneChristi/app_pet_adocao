@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pet_adoption/view/AdicionarPetView.dart';
 import 'package:pet_adoption/view/detalhes_pet_view.dart';
 import 'package:pet_adoption/view/favorites_view.dart';
-import 'package:pet_adoption/view/perfil_view.dart';
 import 'package:pet_adoption/view/adotar_view.dart';
 import 'package:pet_adoption/view/adicionar_pet_view.dart';
+import 'package:pet_adoption/view/adicionarPetView.dart';
+import 'package:pet_adoption/view/perfil_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class _HomeViewState extends State<HomeView> {
     },
     {
       'imagePath': 'assets/images/dog2.png',
-      'name': 'Luke',
+      'name': 'Duke',
       'breed': 'Golden',
       'genderIcon': Icons.male,
       'genderColor': Colors.blue,
@@ -146,7 +146,7 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Pets Indisponíveis',
+                        'Pets Adotados',
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold),
                       ),
@@ -196,20 +196,19 @@ class _HomeViewState extends State<HomeView> {
             Navigator.push(
               context,
               MaterialPageRoute(
+                builder: (context) => AdicionarPetView(),
+              ),
+            );
+          } else if (index == 4) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
                 builder: (context) => const ProfileView(
                   userName: 'Seu Nome',
                   userEmail: 'seuemail@example.com',
                   email: '',
                   address: '',
                 ),
-              ),
-            );
-          } else if (index == 4) {
-            // Navegar para a tela AdicionarPetView
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AdicionarPetView(),
               ),
             );
           }
@@ -220,20 +219,20 @@ class _HomeViewState extends State<HomeView> {
             label: 'Início',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.pets),
+            icon: Icon(Icons.favorite),
             label: 'Favoritos',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_sharp),
+            icon: Icon(Icons.pets),
             label: 'Adotar',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: 'Adicionar Pet',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Perfil',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Adicionar Pet', // O ícone "+" foi adicionado
           ),
         ],
       ),
@@ -263,10 +262,11 @@ class _HomeViewState extends State<HomeView> {
         );
       },
       child: Container(
-        width: 150,
+        width: 124,
+        height: 210,
         margin: const EdgeInsets.only(right: 16),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(15),
           color: Colors.white,
           boxShadow: [
             BoxShadow(
@@ -282,7 +282,7 @@ class _HomeViewState extends State<HomeView> {
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(15),
                   child: Image.asset(
                     pet['imagePath'],
                     fit: BoxFit.cover,
@@ -296,10 +296,10 @@ class _HomeViewState extends State<HomeView> {
                   child: IconButton(
                     icon: Icon(
                       favoritePets.contains(pet)
-                          ? Icons.pets
-                          : Icons.pets_outlined,
+                          ? Icons.favorite
+                          : Icons.favorite_border,
                       color: favoritePets.contains(pet)
-                          ? Colors.amber
+                          ? Colors.pink
                           : Colors.white,
                     ),
                     onPressed: () {
@@ -315,17 +315,8 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                pet['name'],
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   Icon(
@@ -333,12 +324,25 @@ class _HomeViewState extends State<HomeView> {
                     color: pet['genderColor'],
                     size: 18,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 4),
                   Text(
-                    pet['breed'],
-                    style: const TextStyle(fontSize: 14),
+                    pet['name'],
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
                 ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                pet['breed'],
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                ),
               ),
             ),
           ],
@@ -349,12 +353,21 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _adoptedPetCard(Map<String, dynamic> pet) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: ListTile(
-        leading: Image.asset(pet['imagePath']),
-        title: Text(pet['name']),
+        leading: Image.asset(pet['imagePath'], width: 50),
+        title: Row(
+          children: [
+            Icon(
+              pet['genderIcon'],
+              color: pet['genderColor'],
+              size: 18,
+            ),
+            const SizedBox(width: 4),
+            Text(pet['name']),
+          ],
+        ),
         subtitle: Text(pet['breed']),
-        trailing: const Icon(Icons.check_circle, color: Colors.green),
       ),
     );
   }
